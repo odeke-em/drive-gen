@@ -58,20 +58,24 @@ func main() {
 	}
 
 	importsClause := "import \"github.com/odeke-em/xon/pkger/src\"\n\n"
-	formatted := "var pkgInfo = &pkger.PkgInfo {\n"
+	formatted := "var PkgInfo = &pkger.PkgInfo {\n"
 
 	for _, v := range rubric {
 		formatted += fmt.Sprintf("\t%s: \"%s\",\n", v.field, v.value)
 	}
 	formatted += "}\n"
 
-	generatedInfoPath := filepath.Join(absDrivePath, "src", "generated.go")
+	generatedDir := filepath.Join(absDrivePath, "gen")
+	err = os.MkdirAll(generatedDir, 0755)
+	exitIfError(err)
+
+	generatedInfoPath := filepath.Join(generatedDir, "generated.go")
 	f, fErr := os.Create(generatedInfoPath)
 	exitIfError(fErr)
 
 	defer f.Close()
 
-	packageInfo := "\n\npackage drive\n\n"
+	packageInfo := "\n\npackage generated\n\n"
 
 	autoGenerationInfo := fmt.Sprintf("\n\n// This file was auto-generated at %s\n// Edits will be overwritten!\n", time.Now().Round(time.Millisecond))
 
